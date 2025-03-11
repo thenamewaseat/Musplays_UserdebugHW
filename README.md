@@ -6,8 +6,8 @@
  -Theme icon\
  -Back gesture Predict for Android15\
  -Androidx.media3.EXOplayer\
- -MediaControl for Android11+\
+ -MediaControl for Android11+
 
 **Bugs**\
  -Does not expect work good, to many bugs\
- -Landscape mode does't work at all\
+ -Landscape mode does't work at all
