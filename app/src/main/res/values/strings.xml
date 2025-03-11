@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Musplays2</string>
+    <string name="ff">ff</string>
+    <string name="play">play</string>
+    <string name="nxt">nx</string>
+    <string name="pv">pv</string>
+    <string name="fb">fb</string>
+    <string name="todo">TODO</string>
+</resources>
