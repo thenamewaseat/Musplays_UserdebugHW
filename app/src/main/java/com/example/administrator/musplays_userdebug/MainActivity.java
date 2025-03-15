@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -75,13 +73,16 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });*/
         if(Build.VERSION.SDK_INT>=33){
+            //API 33 Requires Read Media
             checkPermission(Manifest.permission.READ_MEDIA_AUDIO, 102);
         }else{
+            //API 32 and below must read storage
             checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 101);
         }
         //checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 101);
         //checkPermission(Manifest.permission.READ_MEDIA_AUDIO, 102);
 
+        //Read Media Store attr https://developer.android.com/training/data-storage/shared/media?hl=zh-tw#java
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         String[] projection = {
                 MediaStore.Audio.Media._ID,
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         int duration;
         String data;
         String title;
+        //Get Music Data, using (https://developer.android.com/training/data-storage/shared/media?hl=zh-tw#java and Grok3)
         try (Cursor cursor = getApplicationContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null)) {
 
             int idColum = ((Cursor) cursor).getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
@@ -131,13 +133,14 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        //List songs in List View
         List<String> songNames = new ArrayList<>();
         for (Audio song : mysongs) {
             //songNames.add(song.getName().replace(".mp3", "").replace(".flac", "").replace(".wav",""));
             songNames.add(song.geStitle());
         }
 
-        // Initialize the adapter
+        // Initialize the adapter ()
         adp = new ArrayAdapter<>(this, R.layout.song_layout, R.id.textView, songNames);
         lv.setAdapter(adp); // Set the adapter to the ListView
 
@@ -174,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         //bug
 
 
-
+// Source: https://www.youtube.com/watch?v=OJpceQqXIjY and https://developer.android.com/training/permissions/requesting?hl=zh-tw
     public void checkPermission(String permission,int requestCode){
         Log.d("Permiss","True");
         if(ActivityCompat.checkSelfPermission(this,permission)== PackageManager.PERMISSION_GRANTED){
@@ -192,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
         }else
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission},requestCode);
     }
-    //p
 
     /*public void checkPermission(String permission,int requestCode){
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission},requestCode);
@@ -200,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //Old Method
         /*permissionManager.checkResult(requestCode,permissions,grantResults);
         ArrayList<String> granted =permissionManager.getStatus().get(0).granted;
         ArrayList<String> denied =permissionManager.getStatus().get(0).denied;*/
@@ -214,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                //Open settings
                                 Intent intent=new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 Uri uri = Uri.fromParts("package",getPackageName(),null);
                                 intent.setData(uri);

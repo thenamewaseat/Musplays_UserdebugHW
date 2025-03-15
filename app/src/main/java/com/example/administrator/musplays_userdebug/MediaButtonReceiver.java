@@ -9,13 +9,13 @@ public class MediaButtonReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (action != null && Player.mp != null) {
+        if (action != null && Player.exp != null) {
             switch (action) {
                 case "ACTION_PLAY":
-                    Player.mp.start();
+                    Player.exp.play();
                     break;
                 case "ACTION_PAUSE":
-                    Player.mp.pause();
+                    Player.exp.pause();
                     break;
                 case "ACTION_NEXT":
                     // Call playNextSong through a service or static method

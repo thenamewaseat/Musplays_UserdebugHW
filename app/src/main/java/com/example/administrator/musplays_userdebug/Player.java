@@ -63,12 +63,12 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
 
     private static final String CHANNEL_ID = "Test";
     private static final int NOTIFICATION_ID = 1;
-    public static MediaPlayer mp;
+    //public static MediaPlayer mp; deprecated,use ExoPlayer
     public static ExoPlayer exp;
 
     public static MediaSession mediaSession;
 
-    private NotificationManager notimgr;
+    //private NotificationManager notimgr;
 
 
     String songName;
@@ -84,11 +84,6 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
     TextView stitle;
 
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    /*private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };*/
 
     @OptIn(markerClass = UnstableApi.class)
     @Override
@@ -97,6 +92,7 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_player);
 
+        //init Gesture detect region
         GestureDetector gestureDetector = new GestureDetector(this, new GestureListener());
         View touchRegion = findViewById(R.id.touchRegion);
         touchRegion.setOnTouchListener(new View.OnTouchListener() {
@@ -123,19 +119,10 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         btNxt.setOnClickListener(this);
         btPv.setOnClickListener(this);
 
-
-
+        //get information passed from Main activity
         Intent i = getIntent();
         Bundle b = i.getExtras();
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            mySongs = b.getParcelableArrayList("songlist");
-        }*/
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            mySongs = b.getParcelable("songlist");
-        }*/
         Audio audio= b.getParcelable("songlist");
-        //ArrayList<Audio> songArray = i.getParcelableArrayListExtra("song_array");
-        //mySongs = b.getParcelable("songlist");
 
 
         position =b.getInt("pos",0);
@@ -157,6 +144,8 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         initializeMediaSession();
         createNotificationChannel();
         showNotification();
+
+        //While playing music
         Player.this.runOnUiThread(new Runnable(){
             @Override
             public void run() {
@@ -167,10 +156,13 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
                     //sb.setProgress(currentpos);
 
                 }
+                //Update frequency
                 mhandler.postDelayed(this,1000);
             }
 
         });
+
+        //Detect slider change
         sl.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float progress, boolean fromUser) {
@@ -203,6 +195,7 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         });*/
     }
 
+    //detect Control button
     @Override
     public void onClick(View v) {
         //stitle=findViewById(R.id.texttitle);
@@ -262,6 +255,8 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         }
         return true; // Indicate event was handled
     }*/
+
+    //Swipe Gesture for skip tracks
     private class GestureListener extends GestureDetector.SimpleOnGestureListener{
         private static final int SWIPE_THRESHOLD = 100;
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
@@ -299,6 +294,7 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
 
     @OptIn(markerClass = UnstableApi.class)
     private void showNotification() {
+        //Generate by grok3
         // Create intent for when notification is clicked
         Intent intent = new Intent(this, Player.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
@@ -345,6 +341,8 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
                             mp.isPlaying() ? pausePendingIntent : playPendingIntent)
                     .addAction(R.drawable.foreground2, "Next", nextPendingIntent);
         }*/
+
+        //https://developer.android.com/develop/ui/views/notifications/build-notification?hl=zh-tw
         builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(R.drawable.foreground2)
@@ -375,36 +373,10 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         //mediaSession2 = new MediaSession(this, "PlayerService");
 
         Notification.MediaStyle media= new Notification.MediaStyle().setMediaSession(mediaSession.getPlatformToken());
-        //Notification noti = new Notification.Builder(this,CHANNEL_ID);*/
         //mediaSession.setPlaybackState(new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING,(long) mp.getCurrentPosition(), (float)1.0).setActions(PlaybackStateCompat.ACTION_SEEK_TO).build());
         //mediaSession2.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING,(long) mp.getCurrentPosition(), (float)1.0).setActions(PlaybackState.ACTION_SEEK_TO).build());
 
-        /*mediaSession2.setCallback(new MediaSession.Callback() {
-            @Override
-            public void onPlay() {
-                super.onPlay();
-            }
 
-            @Override
-            public void onPause() {
-                super.onPause();
-            }
-
-            @Override
-            public void onStop() {
-                super.onStop();
-            }
-
-            @Override
-            public void onSkipToPrevious() {
-                super.onSkipToPrevious();
-            }
-
-            @Override
-            public void onSeekTo(long pos) {
-                super.onSeekTo(pos);
-            }
-        });
 
         /*mediaSession.setCallback(new MediaSession.Callback() {
             @Override
@@ -446,7 +418,10 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         updateMetadata();
         mediaSession.setActive(true); // Activate the media session*/
     }
+
+    //Generate by Grok3
     private void updatePlaybackState() {
+
         PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
                 .setActions(PlaybackStateCompat.ACTION_PLAY |
                         PlaybackStateCompat.ACTION_PAUSE |
