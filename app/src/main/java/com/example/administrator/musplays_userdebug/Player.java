@@ -145,7 +145,7 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         createNotificationChannel();
         showNotification();
 
-        //While playing music
+        //While playing music (Previous work)
         Player.this.runOnUiThread(new Runnable(){
             @Override
             public void run() {
@@ -166,13 +166,18 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         sl.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float progress, boolean fromUser) {
-                Log.d("test", String.valueOf((int) exp.getDuration()/1000));
-                sl.setValueTo( exp.getDuration() /1000);
-                if(fromUser){
-                    exp.seekTo((long)(progress*1000));
+                if (exp.getPlaybackState()== androidx.media3.common.Player.STATE_READY){
+                    sl.setValueTo( exp.getDuration() /1000);
+                    if(fromUser){
+                        exp.seekTo((long)(progress*1000));
+                    }
                 }
+                //Log.d("test", String.valueOf((int) exp.getDuration()/1000));
+
             }
         });
+
+        //seekbar replaced by slider
         /*sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -210,12 +215,11 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
                 else exp.play();
                 break;
             case R.id.btFF:
-
-                exp.seekTo(exp.getCurrentPosition()+5000);
+                exp.seekTo(exp.getCurrentPosition()+5000); //fast Forward
                 break;
             case R.id.btFB:
 
-                exp.seekTo(exp.getCurrentPosition()-5000);
+                exp.seekTo(exp.getCurrentPosition()-5000); //fast Backward
                 break;
             case R.id.btNxt:
                 playNextSong();
@@ -231,30 +235,7 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    /*@Override
-    public boolean onTouchEvent(MotionEvent event){
-        float initialX;
-        float initialY;
-        float currentX;
-        float currentY;
-        boolean touch;
 
-        int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
-            initialX = event.getX();
-            initialY = event.getY();
-            currentX = initialX;
-            currentY = initialY;
-        } else if (action == MotionEvent.ACTION_MOVE) {
-            currentX = event.getX();
-            currentY = event. getY();
-
-            touch = true;
-        } else if (action == MotionEvent.ACTION_UP) {
-            touch = false;
-        }
-        return true; // Indicate event was handled
-    }*/
 
     //Swipe Gesture for skip tracks
     private class GestureListener extends GestureDetector.SimpleOnGestureListener{
@@ -369,7 +350,9 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
 
         //mediaSession = new MediaSessionCompat(this, "PlayerService");
         //private MediaSessionCompat mediaSession;
-        //public static MediaSession mediaSession2;
+        if (mediaSession!=null){
+            mediaSession.release();
+        }
         mediaSession = new MediaSession.Builder(this, exp).build();
         //mediaSession2 = new MediaSession(this, "PlayerService");
 
@@ -454,11 +437,12 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         u = Uri.parse(selectedAudio.getData());
         songName = selectedAudio.geStitle();
         exp.setMediaItem(MediaItem.fromUri(u));
-        Log.d("test", String.valueOf((int) exp.getDuration()/1000));
+        //Log.d("test", String.valueOf((int) exp.getDuration()/1000));
         exp.prepare();
         exp.play();
 
         //sl.setValueTo((float) exp.getDuration() / 1000);
+
         updatePlaybackState();
         updateMetadata();
         stitle.setText(songName);
