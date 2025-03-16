@@ -343,6 +343,7 @@ public class Player extends AppCompatActivity implements View.OnClickListener {
         }*/
 
         //https://developer.android.com/develop/ui/views/notifications/build-notification?hl=zh-tw
+        //https://developer.android.com/media/implement/surfaces/mobile?hl=zh-tw#java
         builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(R.drawable.foreground2)
